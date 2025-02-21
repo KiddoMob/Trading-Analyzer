@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-import * as mobilenet from '@tensorflow-models/mobilenet';
+import { load as loadMobilenet } from '@tensorflow-models/mobilenet'; // Updated import
 
 // Define the model architecture for pattern recognition
 export async function createPatternRecognitionModel() {
@@ -61,7 +61,7 @@ export async function createPatternRecognitionModel() {
 
 // Transfer Learning Integration
 export async function createTransferLearningModel() {
-  const baseModel = await mobilenet.load();
+  const baseModel = await loadMobilenet(); // Use the updated import
   const mobileNetLayers = baseModel.model.layers;
 
   const featureExtractor = tf.model({
@@ -112,7 +112,6 @@ function preprocessTensor(tensor: tf.Tensor4D): tf.Tensor4D {
 // Ensemble Method
 export async function ensemblePredictions(tensors: tf.Tensor4D[]): Promise<number[]> {
   const models = [await createPatternRecognitionModel(), await createTransferLearningModel()];
-
   const predictions = await Promise.all(
     models.map(model =>
       tf.tidy(() => {
